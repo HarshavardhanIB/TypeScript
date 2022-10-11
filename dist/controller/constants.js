@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.secret = exports.name = exports.node_version = exports.npm_version = exports.version = exports.characters = exports.registrationText = exports.registrationSubject = exports.algorithm = exports.expiresIn = void 0;
+exports.expiresIn = "10m";
+exports.algorithm = "HS512";
+exports.registrationSubject = "Admin Portal Registation Successfully";
+exports.registrationText = "User registered Successfully";
+exports.characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+exports.version = "1.1.0";
+exports.npm_version = "8.15.0";
+exports.node_version = "18.7.0";
+exports.name = "adminportal";
+exports.secret = "ideabytes";
