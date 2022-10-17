@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
+const admin_controller_1 = require("../controllers/admin.controller");
+router.post("/project", admin_controller_1.postproject);
+router.get("/project", admin_controller_1.getProjects);
+router.put("/project", admin_controller_1.putProject);
+router.delete("/project", admin_controller_1.deleteProject);
+router.post("/user_details_service", admin_controller_1.postUsreDetails);
+router.get("/user_details_service", admin_controller_1.getUsreDetails);
+router.put("/user_details_service", admin_controller_1.putUsreDetails);
+router.delete("/user_details_service", admin_controller_1.deleteUsreDetails);
+router.delete("/deteUserdetails", admin_controller_1.deleteUserDetails);
+router.get("/usersCount", admin_controller_1.usercount);
+router.post("/sendUserinfo", admin_controller_1.sendUserinfo);
+router.get("/appInfo", admin_controller_1.appInfo);
+exports.default = router;
