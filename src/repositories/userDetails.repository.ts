@@ -30,6 +30,7 @@ export async function deletee(id:any) {
     return details;
 }
 export async function findall(id:any) {
+    
     const connect = await dbcon.connection();
     let queryfordetails = querys.getUserDetails;
     let db=connect?.db;

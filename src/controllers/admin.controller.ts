@@ -465,13 +465,46 @@ export async function deleteUsreDetails(req: Request, res: Response, next: NextF
     }
 }
 export async function getUsreDetails(req: Request, res: Response, next: NextFunction) {
-    // userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
-    UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
-        if (userdetails.length == 0) {
+    if (dataBase == "MONGO") {
+        // userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
+        UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
+            if (userdetails.length == 0) {
+                res.status(201).json(
+                    {
+                        "statusCode": 201,
+                        "message": "Please add user details "
+                    }
+                )
+                return res;
+            }
+            else {
+                res.status(200).json(
+                    {
+                        "statusCode": 200,
+                        "message": "Listing of user details successfully",
+                        "userdetails": userdetails
+                    }
+                )
+                return res;
+
+            }
+        }).catch(err => {
+            res.status(500).json({
+                "statusCode": 500,
+                "message": "Error while getting the userdetails"
+            })
+        })
+    }
+    else {
+        let id=middlewhere.userid;
+        console.log("*********************************************");
+        console.log(id);
+        let data = await UserDetaRepo.findall({"id":id});
+        if (data.length == 0) {
             res.status(201).json(
                 {
                     "statusCode": 201,
-                    "message": "Please add user details "
+                    "message": "No data found"
                 }
             )
             return res;
@@ -480,19 +513,14 @@ export async function getUsreDetails(req: Request, res: Response, next: NextFunc
             res.status(200).json(
                 {
                     "statusCode": 200,
-                    "message": "Listing of user details successfully",
-                    "userdetails": userdetails
+                    "message": messages.getUserdetails,
+                    "data": data
                 }
             )
             return res;
-
         }
-    }).catch(err => {
-        res.status(500).json({
-            "statusCode": 500,
-            "message": "error while insert the user details"
-        })
-    })
+
+    }
 }
 export async function deleteUserDetails(req: Request, res: Response, next: NextFunction) {
     let id = req.query.id;
@@ -598,7 +626,7 @@ export async function sendUserinfo(req: Request, res: Response, next: NextFuncti
     cron.schedule('* * * * 1 *', async function () {
         console.log("entered1");
         // let emailId = req.data.emailId;
-        let result:any;
+        let result: any;
         const emailIdformail: string = "harshavardhan.kadupu@ideabytes.com";
         let emailId = "harshavardhan.kadupu@ideabytes.com";
         let userid = 10;
@@ -613,9 +641,8 @@ export async function sendUserinfo(req: Request, res: Response, next: NextFuncti
         let previousMonth = year + "-" + previosmonth + "-" + today + " " + time;
         let currentDateAndTime = date.format(now, 'YYYY-MM-DD HH:mm:ss');
 
-        if(dataBase=="MONGO")
-        {
-            result= await user.find({ create_date_and_time: { $gte: currentDateAndTime, $lte: previousMonth } })
+        if (dataBase == "MONGO") {
+            result = await user.find({ create_date_and_time: { $gte: currentDateAndTime, $lte: previousMonth } })
             if (result.length == 0) {
 
                 let message = "<p>" + "No users found in " + currentDateAndTime + " to " + previousMonth + "</p>";
@@ -644,7 +671,7 @@ export async function sendUserinfo(req: Request, res: Response, next: NextFuncti
                 }
                 let tablelast = "</tr> </table>";
                 let html_content = htmlfront + row + tablelast;
-    
+
                 let attachments = [{
                     filename: 'userdata.xlsx',
                     path: './userdata.xlsx'
@@ -672,9 +699,8 @@ export async function sendUserinfo(req: Request, res: Response, next: NextFuncti
                 }
             }
         }
-        else
-        {
-            result= await userRepo.findd({ currentDateAndTime: currentDateAndTime, previousMonth: previousMonth });
+        else {
+            result = await userRepo.findd({ currentDateAndTime: currentDateAndTime, previousMonth: previousMonth });
             if (result.length == 0) {
 
                 let message = "<p>" + "No users found in " + currentDateAndTime + " to " + previousMonth + "</p>";
@@ -703,7 +729,7 @@ export async function sendUserinfo(req: Request, res: Response, next: NextFuncti
                 }
                 let tablelast = "</tr> </table>";
                 let html_content = htmlfront + row + tablelast;
-    
+
                 let attachments = [{
                     filename: 'userdata.xlsx',
                     path: './userdata.xlsx'
@@ -731,20 +757,76 @@ export async function sendUserinfo(req: Request, res: Response, next: NextFuncti
                 }
             }
         }
-        
+
     })
 
 }
-export async function appInfo(req: Request, res: Response, next: NextFunction)
-{
-    let data:any = { "name": constants.name, "version": constants.version, "NodeVersion": process.versions.node, "NPM Version": constants.npm_version };
+export async function appInfo(req: Request, res: Response, next: NextFunction) {
+    let data: any = { "name": constants.name, "version": constants.version, "NodeVersion": process.versions.node, "NpmVersion": constants.npm_version };
     let responseData =
     {
         "statusCode": 200,
-        "message": "The App details",
+        "message": "The project details",
         "AppData": data
     };
     const jsonContent = JSON.stringify(responseData);
     res.status(200).end(jsonContent);
     return res;
+}
+export async function allusers(req: Request, res: Response, next: NextFunction) {
+    if (dataBase == "MONGO") {
+        UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
+            if (userdetails.length == 0) {
+                res.status(201).json(
+                    {
+                        "statusCode": 201,
+                        "message": "Please add user details "
+                    }
+                )
+                return res;
+            }
+            else {
+                res.status(200).json(
+                    {
+                        "statusCode": 200,
+                        "message": "Listing of user details successfully",
+                        "userdetails": userdetails
+                    }
+                )
+                return res;
+
+            }
+        }).catch(err => {
+            res.status(500).json({
+                "statusCode": 500,
+                "message": "Error while getting the userdetails"
+            })
+        })
+    }
+    else {
+        let id=middlewhere.userid;
+        console.log("*********************************************");
+        console.log(id);
+        let data = await UserDetaRepo.findall({"id":id});
+        if (data.length == 0) {
+            res.status(201).json(
+                {
+                    "statusCode": 201,
+                    "message": "No data found"
+                }
+            )
+            return res;
+        }
+        else {
+            res.status(200).json(
+                {
+                    "statusCode": 200,
+                    "message": messages.getUserdetails,
+                    "data": data
+                }
+            )
+            return res;
+        }
+
+    }
 }

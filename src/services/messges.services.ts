@@ -41,3 +41,6 @@ export const  projectDelete="Error while delete the projects";
 export const listOfProjects="Listing of projects successfully";
 export const errorData="Error while update the data";
 export const connerror="connection error";
+export const enterAlpha="Enter User name alpha numaric values only";
+export const activationError="error while activate your account";
+export const getUserdetails="User Details information"

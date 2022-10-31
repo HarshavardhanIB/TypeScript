@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connerror = exports.errorData = exports.listOfProjects = exports.projectDelete = exports.emailerr = exports.validinput = exports.userActivation = exports.invalidKey = exports.checkMail = exports.emailSend = exports.tokenUnauthorized = exports.invalidRolePath = exports.deleteallUserdetailsSuccess = exports.updateProject = exports.insertProjects = exports.loginSuccess = exports.invalidUSandPsw = exports.errorwhilegetingData = exports.invalidRole = exports.usersCount = exports.deletedProjectinsertion = exports.checkRoleId = exports.noUsers = exports.TokenExpiredError = exports.uploadImages = exports.udUpdateSuccess = exports.fileError = exports.FNandLNrange = exports.FNandLNalphabets = exports.ListOfUserSuccess = exports.QueryError = exports.deleteUserdetailsSuccess = exports.deletedProject = exports.GetCountSuccess = exports.NoProjects = exports.UserRegisterSuccess = exports.errorOnInsertData = exports.EIexists = exports.UNexists = exports.UNRange = exports.UNalphaNumaric = exports.validEmial = exports.accessTokenSecret = void 0;
+exports.getUserdetails = exports.activationError = exports.enterAlpha = exports.connerror = exports.errorData = exports.listOfProjects = exports.projectDelete = exports.emailerr = exports.validinput = exports.userActivation = exports.invalidKey = exports.checkMail = exports.emailSend = exports.tokenUnauthorized = exports.invalidRolePath = exports.deleteallUserdetailsSuccess = exports.updateProject = exports.insertProjects = exports.loginSuccess = exports.invalidUSandPsw = exports.errorwhilegetingData = exports.invalidRole = exports.usersCount = exports.deletedProjectinsertion = exports.checkRoleId = exports.noUsers = exports.TokenExpiredError = exports.uploadImages = exports.udUpdateSuccess = exports.fileError = exports.FNandLNrange = exports.FNandLNalphabets = exports.ListOfUserSuccess = exports.QueryError = exports.deleteUserdetailsSuccess = exports.deletedProject = exports.GetCountSuccess = exports.NoProjects = exports.UserRegisterSuccess = exports.errorOnInsertData = exports.EIexists = exports.UNexists = exports.UNRange = exports.UNalphaNumaric = exports.validEmial = exports.accessTokenSecret = void 0;
 exports.accessTokenSecret = 'ideabytes';
 exports.validEmial = "Enter valid email id";
 exports.UNalphaNumaric = "User Name accepts only alphanumaric";
@@ -44,3 +44,6 @@ exports.projectDelete = "Error while delete the projects";
 exports.listOfProjects = "Listing of projects successfully";
 exports.errorData = "Error while update the data";
 exports.connerror = "connection error";
+exports.enterAlpha = "Enter User name alpha numaric values only";
+exports.activationError = "error while activate your account";
+exports.getUserdetails = "User Details information";

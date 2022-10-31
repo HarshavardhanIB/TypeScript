@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.appInfo = exports.sendUserinfo = exports.usercount = exports.deleteUserDetails = exports.getUsreDetails = exports.deleteUsreDetails = exports.putUsreDetails = exports.postUsreDetails = exports.getProjects = exports.deleteProject = exports.putProject = exports.postproject = void 0;
+exports.allusers = exports.appInfo = exports.sendUserinfo = exports.usercount = exports.deleteUserDetails = exports.getUsreDetails = exports.deleteUsreDetails = exports.putUsreDetails = exports.postUsreDetails = exports.getProjects = exports.deleteProject = exports.putProject = exports.postproject = void 0;
 const messages = __importStar(require("../services/messges.services"));
 const validation = __importStar(require("../services/validation.services"));
 const projects_model_1 = __importDefault(require("../model/projects.model"));
@@ -484,29 +484,52 @@ function deleteUsreDetails(req, res, next) {
 exports.deleteUsreDetails = deleteUsreDetails;
 function getUsreDetails(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        // userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
-        UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
-            if (userdetails.length == 0) {
+        if (dataBase == "MONGO") {
+            // userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
+            UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
+                if (userdetails.length == 0) {
+                    res.status(201).json({
+                        "statusCode": 201,
+                        "message": "Please add user details "
+                    });
+                    return res;
+                }
+                else {
+                    res.status(200).json({
+                        "statusCode": 200,
+                        "message": "Listing of user details successfully",
+                        "userdetails": userdetails
+                    });
+                    return res;
+                }
+            }).catch(err => {
+                res.status(500).json({
+                    "statusCode": 500,
+                    "message": "Error while getting the userdetails"
+                });
+            });
+        }
+        else {
+            let id = middlewhere.userid;
+            console.log("*********************************************");
+            console.log(id);
+            let data = yield UserDetaRepo.findall({ "id": id });
+            if (data.length == 0) {
                 res.status(201).json({
                     "statusCode": 201,
-                    "message": "Please add user details "
+                    "message": "No data found"
                 });
                 return res;
             }
             else {
                 res.status(200).json({
                     "statusCode": 200,
-                    "message": "Listing of user details successfully",
-                    "userdetails": userdetails
+                    "message": messages.getUserdetails,
+                    "data": data
                 });
                 return res;
             }
-        }).catch(err => {
-            res.status(500).json({
-                "statusCode": 500,
-                "message": "error while insert the user details"
-            });
-        });
+        }
     });
 }
 exports.getUsreDetails = getUsreDetails;
@@ -741,10 +764,10 @@ function sendUserinfo(req, res, next) {
 exports.sendUserinfo = sendUserinfo;
 function appInfo(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        let data = { "name": constants.name, "version": constants.version, "NodeVersion": process.versions.node, "NPM Version": constants.npm_version };
+        let data = { "name": constants.name, "version": constants.version, "NodeVersion": process.versions.node, "NpmVersion": constants.npm_version };
         let responseData = {
             "statusCode": 200,
-            "message": "The App details",
+            "message": "The project details",
             "AppData": data
         };
         const jsonContent = JSON.stringify(responseData);
@@ -753,3 +776,53 @@ function appInfo(req, res, next) {
     });
 }
 exports.appInfo = appInfo;
+function allusers(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (dataBase == "MONGO") {
+            UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
+                if (userdetails.length == 0) {
+                    res.status(201).json({
+                        "statusCode": 201,
+                        "message": "Please add user details "
+                    });
+                    return res;
+                }
+                else {
+                    res.status(200).json({
+                        "statusCode": 200,
+                        "message": "Listing of user details successfully",
+                        "userdetails": userdetails
+                    });
+                    return res;
+                }
+            }).catch(err => {
+                res.status(500).json({
+                    "statusCode": 500,
+                    "message": "Error while getting the userdetails"
+                });
+            });
+        }
+        else {
+            let id = middlewhere.userid;
+            console.log("*********************************************");
+            console.log(id);
+            let data = yield UserDetaRepo.findall({ "id": id });
+            if (data.length == 0) {
+                res.status(201).json({
+                    "statusCode": 201,
+                    "message": "No data found"
+                });
+                return res;
+            }
+            else {
+                res.status(200).json({
+                    "statusCode": 200,
+                    "message": messages.getUserdetails,
+                    "data": data
+                });
+                return res;
+            }
+        }
+    });
+}
+exports.allusers = allusers;

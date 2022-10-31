@@ -1,4 +1,6 @@
 import express,{ Express,Request,Response } from "express";
+import { CorsOptions } from "cors";
+import cors from 'cors';
 import dotenv from "dotenv";
 import bodyparser from 'body-parser';
 import auth from './routes/auth.router';
@@ -10,6 +12,11 @@ import * as middlewhere  from './middleware/verifyToken.middleware'
 dotenv.config();
 const app: Express=express();
 const port=process.env.PORT;
+const Options:cors.CorsOptions={
+  origin: '*',
+}
+app.use(cors(Options))
+app.use(middlewhere.corsFunction)
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 app.get('/',(req:Request,res:Response)=>
@@ -24,5 +31,5 @@ app.use(apiErrHandler);
 app.listen(port,()=>
 {
   console.log(`the app is running on the port ${port}`);
-  connect();
+  // connect();
 })

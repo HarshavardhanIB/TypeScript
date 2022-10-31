@@ -18,4 +18,5 @@ router.delete("/deteUserdetails", admin_controller_1.deleteUserDetails);
 router.get("/usersCount", admin_controller_1.usercount);
 router.post("/sendUserinfo", admin_controller_1.sendUserinfo);
 router.get("/appInfo", admin_controller_1.appInfo);
+router.get("/allUsers", admin_controller_1.allusers);
 exports.default = router;

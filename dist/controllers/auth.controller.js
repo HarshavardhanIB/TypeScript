@@ -67,11 +67,11 @@ function registration(req, res, next) {
             }
             let userNameValidation = yield (0, validation_services_1.AlphaNumberorNot)(userName);
             if (userNameValidation == false) {
-                next(apierr_middleware_1.default.badReq("Enter User name alpha numaric values only"));
+                next(apierr_middleware_1.default.badReq(messages.enterAlpha));
             }
             let userNamelengthValidation = yield (0, validation_services_1.lengthVerification)(userName, 2, 20);
             if (userNamelengthValidation == false) {
-                next(apierr_middleware_1.default.badReq("enter the user name in between 2 and 20 characters only"));
+                next(apierr_middleware_1.default.badReq(messages.UNRange));
             }
             if (dataBase == "MONGO") {
                 let mailcount = yield user_model_1.default.find({ emailid: emailid }).count();
@@ -157,7 +157,7 @@ function login(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { userName, password } = req.body;
-            console.log(req.body);
+            // console.log(req.body);
             if (!userName || !password) {
                 next(apierr_middleware_1.default.badReq("enter valid input"));
             }
@@ -174,9 +174,8 @@ function login(req, res, next) {
                                         "message": messages.invalidUSandPsw
                                     });
                                     return res;
-                                    return;
                                 }
-                                console.log(result);
+                                // console.log(result);
                                 if (result) {
                                     console.log(user);
                                     if (user.active == 0) {
@@ -213,7 +212,6 @@ function login(req, res, next) {
                                         "message": messages.invalidUSandPsw
                                     });
                                     return res;
-                                    return;
                                 }
                             });
                         });
@@ -229,7 +227,7 @@ function login(req, res, next) {
             else {
                 // usre.findOne({ $or: [{ email: userName }, { UserName: userName }] }).then(user => {
                 userRepo.findOne({ email: userName, UserName: userName }).then(user => {
-                    console.log(user);
+                    // console.log(user);
                     // await User.findOne({ $or: [{ email: userName }, { UserName: userName }] }).then(user => {
                     if (user) {
                         // const passwordHash = bcrypt.hashSync(password, 10);
@@ -243,8 +241,7 @@ function login(req, res, next) {
                                     return res;
                                     return;
                                 }
-                                console.log(result);
-                                if (result) {
+                                else if (result) {
                                     console.log(user);
                                     if (user[0].active == 0) {
                                         res.status(202).json({
@@ -334,7 +331,7 @@ function activate(req, res, next) {
             }
         }
         catch (error) {
-            next(apierr_middleware_1.default.badReq("error while activate your account"));
+            next(apierr_middleware_1.default.badReq(messages.activationError));
         }
     });
 }

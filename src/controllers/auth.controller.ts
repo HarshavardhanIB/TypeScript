@@ -41,11 +41,11 @@ export async function registration(req: Request, res: Response, next: NextFuncti
         }
         let userNameValidation = await AlphaNumberorNot(userName);
         if (userNameValidation == false) {
-            next(apierr.badReq("Enter User name alpha numaric values only"));
+            next(apierr.badReq(messages.enterAlpha));
         }
         let userNamelengthValidation = await lengthVerification(userName, 2, 20);
         if (userNamelengthValidation == false) {
-            next(apierr.badReq("enter the user name in between 2 and 20 characters only"))
+            next(apierr.badReq(messages.UNRange))
         }
         if (dataBase == "MONGO") {
             let mailcount: number = await User.find({ emailid: emailid }).count();
@@ -130,7 +130,7 @@ export async function registration(req: Request, res: Response, next: NextFuncti
 export async function login(req: Request, res: Response, next: NextFunction) {
     try {
         const { userName, password } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
         if (!userName || !password) {
             next(apierr.badReq("enter valid input"));
         }
@@ -148,9 +148,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
                                 }
                             )
                             return res;
-                            return;
                         }
-                        console.log(result);
+                        // console.log(result);
                         if (result) {
                             console.log(user);
                             if (user.active == 0) {
@@ -191,7 +190,6 @@ export async function login(req: Request, res: Response, next: NextFunction) {
                                 }
                             )
                             return res;
-                            return;
                         }
 
                     })
@@ -211,7 +209,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         else {
             // usre.findOne({ $or: [{ email: userName }, { UserName: userName }] }).then(user => {
             userRepo.findOne({ email: userName, UserName: userName }).then(user => {
-                console.log(user);
+                // console.log(user);
                 // await User.findOne({ $or: [{ email: userName }, { UserName: userName }] }).then(user => {
                 if (user) {
                     // const passwordHash = bcrypt.hashSync(password, 10);
@@ -226,8 +224,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
                             return res;
                             return;
                         }
-                        console.log(result);
-                        if (result) {
+                        else if (result) {
                             console.log(user);
                             if (user[0].active == 0) {
                                 res.status(202).json({
@@ -326,6 +323,6 @@ export async function activate(req: Request, res: Response, next: NextFunction) 
 
     }
     catch (error) {
-        next(apierr.badReq("error while activate your account"));
+        next(apierr.badReq(messages.activationError));
     }
 }

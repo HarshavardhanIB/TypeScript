@@ -1,6 +1,6 @@
 import express from 'express';
 const router=express.Router();
-import {postproject,deleteProject,putProject,getProjects,deleteUsreDetails,getUsreDetails,postUsreDetails,putUsreDetails,deleteUserDetails,usercount,sendUserinfo,appInfo} from '../controllers/admin.controller';
+import {postproject,deleteProject,putProject,getProjects,deleteUsreDetails,getUsreDetails,postUsreDetails,putUsreDetails,deleteUserDetails,usercount,sendUserinfo,appInfo,allusers} from '../controllers/admin.controller';
 router.post("/project",postproject);
 router.get("/project",getProjects);
 router.put("/project",putProject);
@@ -13,4 +13,5 @@ router.delete("/deteUserdetails",deleteUserDetails);
 router.get("/usersCount",usercount);
 router.post("/sendUserinfo",sendUserinfo);
 router.get("/appInfo",appInfo);
+router.get("/allUsers",allusers)
 export default router;
