@@ -33,10 +33,15 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const auth_router_1 = __importDefault(require("./routes/auth.router"));
 const admin_router_1 = __importDefault(require("./routes/admin.router"));
 const user_touter_1 = __importDefault(require("./routes/user.touter"));
+const test_router_1 = __importDefault(require("./routes/test.router"));
+const path_1 = __importDefault(require("path"));
 const apiErrHandler_middleware_1 = __importDefault(require("./middleware/apiErrHandler.middleware"));
 const middlewhere = __importStar(require("./middleware/verifyToken.middleware"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+app.use(express_1.default.json());
+app.use('/images', express_1.default.static(path_1.default.resolve(__dirname, '../public/resources/images')));
+app.use('/logfile', express_1.default.static(path_1.default.resolve(__dirname, '../public/resources/logfile')));
 const port = process.env.PORT;
 const Options = {
     origin: '*',
@@ -49,6 +54,7 @@ app.get('/', (req, res) => {
     res.send("express");
 });
 app.use(middlewhere.verifyToken);
+app.use("/api/test", test_router_1.default);
 app.use("/api/auth", auth_router_1.default);
 app.use("/api/admin", admin_router_1.default);
 app.use("/api/user", user_touter_1.default);

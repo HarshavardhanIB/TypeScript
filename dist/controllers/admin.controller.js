@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.allusers = exports.appInfo = exports.sendUserinfo = exports.usercount = exports.deleteUserDetails = exports.getUsreDetails = exports.deleteUsreDetails = exports.putUsreDetails = exports.postUsreDetails = exports.getProjects = exports.deleteProject = exports.putProject = exports.postproject = void 0;
-const messages = __importStar(require("../services/messges.services"));
+const messages = __importStar(require("../services/messges"));
 const validation = __importStar(require("../services/validation.services"));
 const projects_model_1 = __importDefault(require("../model/projects.model"));
 const userProfile_model_1 = __importDefault(require("../model/userProfile.model"));
@@ -46,7 +46,7 @@ const date = __importStar(require("date-and-time"));
 const fs = __importStar(require("fs"));
 const cron = __importStar(require("node-cron"));
 const promises_1 = require("fs/promises");
-const constants = __importStar(require("../services/constants.services"));
+const constants = __importStar(require("../services/constants"));
 const apierr_middleware_1 = __importDefault(require("../middleware/apierr.middleware"));
 const formidable = __importStar(require("formidable"));
 const email_services_1 = __importDefault(require("../services/email.services"));
@@ -239,7 +239,7 @@ function getProjects(req, res, next) {
             });
         }
         { // projects.find({}).then(projects => {
-            projectRepo.findall().then(projects => {
+            projectRepo.findasllProject(middlewhere.userid).then(projects => {
                 if (projects.length == 0) {
                     res.status(201).json({
                         "statusCode": 201,
@@ -308,7 +308,8 @@ function postUsreDetails(req, res, next) {
                     }
                     let data = yield (0, promises_1.readFile)(files.filetoupload.filepath);
                     (0, promises_1.writeFile)(dir + "/" + middlewhere.userid + ".png", data);
-                    let profilePic = "/images/" + middlewhere.userid + ".png";
+                    // let profilePic = "/images/" + middlewhere.userid + ".png";
+                    let profilePic = middlewhere.userid + ".png";
                     let userDetailss = new userProfile_model_1.default({
                         user_id: middlewhere.userid,
                         first_name: firstName,
@@ -329,15 +330,43 @@ function postUsreDetails(req, res, next) {
                         }));
                     }
                     else { // userDetailss.save().then(result => {
-                        UserDetaRepo.save(userDetailss).then(result => {
-                            res.status(200).json({
-                                "statusCode": 200,
-                                "message": "User details inserted successfully"
-                            });
-                        }).then(err => res.status(500).json({
-                            "statusCode": 500,
-                            "message": "error while insert the user details"
-                        }));
+                        // UserDetaRepo.save(userDetailss).then(result => {
+                        //     res.status(200).json({
+                        //         "statusCode": 200,
+                        //         "message": "User details inserted successfully"
+                        //     })
+                        // }).then(err =>
+                        //     res.status(500).json({
+                        //         "statusCode": 500,
+                        //         "message": "error while insert the user details"
+                        //     })
+                        // )
+                        // userDetailss.save().then(result => {
+                        let userdetailsCount = yield UserDetaRepo.count({ id: middlewhere.userid });
+                        if (userdetailsCount[0].count == 0) {
+                            UserDetaRepo.save(userDetailss).then(result => {
+                                res.status(200).json({
+                                    "statusCode": 200,
+                                    "message": "User details inserted successfully"
+                                });
+                            }).then(err => res.status(500).json({
+                                "statusCode": 500,
+                                "message": "error while insert the user details"
+                            }));
+                        }
+                        else {
+                            let updatebasedonId = { user_id: middlewhere.userid };
+                            UserDetaRepo.findOneAndUpdate(updatebasedonId, userDetailss).then(result => {
+                                // await userDetails.findOneAndUpdate(updatebasedonId, userDetailss).then(result => {
+                                res.status(200).json({
+                                    "statusCode": 200,
+                                    "message": "User details updated successfully"
+                                });
+                            }).then(err => res.status(500).json({
+                                "statusCode": 500,
+                                "message": "error while insert the user details"
+                            }));
+                        }
                     }
                 }
                 else {
@@ -406,7 +435,8 @@ function putUsreDetails(req, res, next) {
                 }
                 let data = (0, promises_1.readFile)(files.filetoupload.filepath);
                 (0, promises_1.writeFile)(dir + "/" + middlewhere.userid + ".png", data);
-                let profilePic = "/images/" + middlewhere.userid + ".png";
+                // let profilePic = "/images/" + middlewhere.userid + ".png";
+                let profilePic = middlewhere.userid + ".png";
                 let userDetailss = {
                     first_name: firstName,
                     last_name: lastName,
@@ -522,10 +552,23 @@ function getUsreDetails(req, res, next) {
                 return res;
             }
             else {
+                console.log(data);
+                let finaldata = [];
+                for (let i = 0; i < data.length; i++) {
+                    let id = data[i].id;
+                    let user_id = data[i].user_id;
+                    let first_name = data[i].first_name;
+                    let last_name = data[i].last_name;
+                    let profile_pic = constants.adminportalURL + "images/" + data[i].profile_pic;
+                    let dataArray = { "id": id, "user_id": user_id, "first_name": first_name, "last_name": last_name, "profile_pic": profile_pic };
+                    finaldata.push(dataArray);
+                }
+                console.log(data[0].id);
+                console.log(data[1].id);
                 res.status(200).json({
                     "statusCode": 200,
                     "message": messages.getUserdetails,
-                    "data": data
+                    "data": finaldata
                 });
                 return res;
             }
@@ -615,8 +658,11 @@ function usercount(req, res, next) {
             // let userCount: number = await user.find({ roleId: 2 }).count();
             let adminCount = yield userRepo.findCount({ roleId: 1 });
             let userCount = yield userRepo.findCount({ roleId: 2 });
-            let total = adminCount + userCount;
-            let data = { "users": userCount, "admins": adminCount, "total": total };
+            let total = adminCount[0].count + userCount[0].count;
+            // console.log("**************************");
+            // console.log(adminCount[0]);
+            // console.log(adminCount[0].count);
+            let data = { "users": userCount[0].count, "admins": adminCount[0].count, "total": total };
             let responseData = {
                 "statusCode": 200,
                 "message": messages.GetCountSuccess,

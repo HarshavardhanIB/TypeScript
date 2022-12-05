@@ -35,11 +35,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findall = exports.find = exports.deleteOne = exports.findOneAndUpdate = exports.save = void 0;
+exports.findasllProject = exports.findall = exports.find = exports.deleteOne = exports.findOneAndUpdate = exports.save = void 0;
 const dbcon = __importStar(require("../dbConnection/mysql"));
-const querys = __importStar(require("../services/querys.service"));
+const querys = __importStar(require("../services/querys"));
 const apierr_middleware_1 = __importDefault(require("../middleware/apierr.middleware"));
-const messages = __importStar(require("../services/messges.services"));
+const messages = __importStar(require("../services/messges"));
 const table = 'users';
 function save(project) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -116,3 +116,18 @@ function findall() {
     });
 }
 exports.findall = findall;
+function findasllProject(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const connect = yield dbcon.connection();
+            let getProjects = querys.getProjectsForAllDetailsforuser;
+            let db = connect === null || connect === void 0 ? void 0 : connect.db;
+            let details = db(getProjects, [id]);
+            return details;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    });
+}
+exports.findasllProject = findasllProject;

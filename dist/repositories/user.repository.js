@@ -34,7 +34,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findd = exports.remove = exports.findCount = exports.findOne = exports.findById = exports.save = void 0;
 const dbcon = __importStar(require("../dbConnection/mysql"));
-const querys = __importStar(require("../services/querys.service"));
+const querys = __importStar(require("../services/querys"));
 const mysql = require('mysql'); // or use import if you use TS
 const table = 'users';
 function save(user) {
@@ -77,7 +77,7 @@ function findCount(user) {
     return __awaiter(this, void 0, void 0, function* () {
         const connect = yield dbcon.connection();
         let db = connect === null || connect === void 0 ? void 0 : connect.db;
-        let queryforfind = "select count(*) from users where role_id=?";
+        let queryforfind = "select count(*) as count from users where role_id=?";
         let details = db(queryforfind, [user.id]);
         console.log(details);
         console.log("count of the query");

@@ -1,4 +1,4 @@
-import * as messages from '../services/messges.services';
+import * as messages from '../services/messges';
 import * as validation from '../services/validation.services';
 import projects from '../model/projects.model';
 import userDetails from '../model/projects.model';
@@ -13,6 +13,7 @@ import * as userRepo from '../repositories/user.repository';
 import * as projectRepo from '../repositories/project.repository';
 import * as UserDetaRepo from '../repositories/userDetails.repository';
 import apierr from '../middleware/apierr.middleware';
+import * as constants from '../services/constants';
 let responseData: any;
 const dataBase: any = process.env.DATABASE;
 let jsonContent: any;
@@ -240,6 +241,9 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
     form.parse(req, async function (error, fields, files: any) {
         let firstName: any = fields.firstName;
         let lastName: any = fields.lastName;
+        console.log("*****************")
+        console.log(firstName);
+        console.log(lastName);
         let checkFname = await validation.isAlphaorNot(firstName);
         let checkLname = await validation.isAlphaorNot(lastName);
         let fnLength = await validation.lengthVerification(firstName, 2, 50);
@@ -274,7 +278,8 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
             }
             let data: any = await readFile(files.filetoupload.filepath);
             writeFile(dir + "/" + middlewhere.userid + ".png", data);
-            let profilePic = "/images/" + middlewhere.userid + ".png";
+            let profilePic = middlewhere.userid + ".png";
+            console.log(profilePic);
             let userDetailss = new userDetails({
                 user_id: middlewhere.userid,
                 first_name: firstName,
@@ -283,6 +288,8 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
                 created_on: currentDateAndTime,
                 updated_on: currentDateAndTime
             });
+            console.log(middlewhere.userid);
+            console.log("the userdetails ===",userDetailss)
             if (dataBase == "MONGO") {
                 userDetailss.save().then(result => {
                     res.status(200).json({
@@ -296,8 +303,13 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
                     })
                 )
             }
-            else {// userDetailss.save().then(result => {
-                UserDetaRepo.save(userDetailss).then(result => {
+            else {
+                // userDetailss.save().then(result => {
+                    let ud={"user_id":middlewhere.userid,"first_name":firstName ,"last_name":lastName ,"profile_pic":profilePic,"created_on":currentDateAndTime,"updated_on":currentDateAndTime};
+                    let userdetailsCount=await UserDetaRepo.count({ id: middlewhere.userid });
+                if(userdetailsCount[0].count==0)
+                
+                {UserDetaRepo.save(ud).then(result => {
                     res.status(200).json({
                         "statusCode": 200,
                         "message": "User details inserted successfully"
@@ -307,11 +319,26 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
                         "statusCode": 500,
                         "message": "error while insert the user details"
                     })
-                )
+                )}
+                else
+                {
+                    let updatebasedonId = { user_id: middlewhere.userid };
+                    UserDetaRepo.findOneAndUpdate(updatebasedonId, ud).then(result => {
+                        // await userDetails.findOneAndUpdate(updatebasedonId, userDetailss).then(result => {
+                        res.status(200).json({
+                            "statusCode": 200,
+                            "message": "User details updated successfully"
+                        })
+                    }).then(err =>
+                        res.status(500).json({
+                            "statusCode": 500,
+                            "message": "error while insert the user details"
+                        })
+                    )
+                }
             }
         }
         else {
-            console.log("enter123456");
             let responseData =
             {
                 "statusCode": 201,
@@ -454,7 +481,7 @@ export async function deleteUsreDetails(req: Request, res: Response, next: NextF
 export async function getUsreDetails(req: Request, res: Response, next: NextFunction) {
     if (dataBase == "MONGO") {
         // await userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
-        UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
+        UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails=> {
             if (userdetails.length == 0) {
                 res.status(201).json(
                     {
@@ -465,6 +492,7 @@ export async function getUsreDetails(req: Request, res: Response, next: NextFunc
                 return res;
             }
             else {
+                
                 res.status(200).json(
                     {
                         "statusCode": 200,
@@ -482,9 +510,11 @@ export async function getUsreDetails(req: Request, res: Response, next: NextFunc
             })
         })
     }
-
-    else {// await userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
-        UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
+    else {
+        // await userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
+        UserDetaRepo.findall({ id: middlewhere.userid }).then(userdetails => {
+            console.log("enter");
+            console.log("user details >>>>",userdetails);
             if (userdetails.length == 0) {
                 res.status(201).json(
                     {
@@ -495,20 +525,31 @@ export async function getUsreDetails(req: Request, res: Response, next: NextFunc
                 return res;
             }
             else {
+                console.log("user details >>>>",userdetails);
+                let data=userdetails[0];
+                console.log(userdetails[0]);
+                let idindb=data.id;
+                let user_id= data.user_id;
+                let first_name = data.first_name;
+                let last_name=data.last_name;
+                let profile_pic=constants.adminportalURL+"images/"+ data.profile_pic;
+                let dataArray={"id":idindb,"user_id":user_id,"first_name":first_name,"last_name":last_name,"profile_pic":profile_pic}
+                
                 res.status(200).json(
                     {
                         "statusCode": 200,
                         "message": "Listing of user details successfully",
-                        "userdetails": userdetails
+                        "userdetails": dataArray
                     }
                 )
                 return res;
 
             }
         }).catch(err => {
+            console.log(err);
             res.status(500).json({
                 "statusCode": 500,
-                "message": "error while insert the user details"
+                "message": "error while get the user details"
             })
         })
     }

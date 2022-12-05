@@ -1,6 +1,6 @@
 
 import * as dbcon from '../dbConnection/mysql';
-import * as querys from '../services/querys.service';
+import * as querys from '../services/querys';
 import {wrap} from "node-mysql-wrapper";
 const mysql = require('mysql'); // or use import if you use TS
 import util from 'util';
@@ -37,7 +37,7 @@ export async function findOne(user:any)
 export async function findCount(user:any) {
     const connect = await dbcon.connection();
     let db=connect?.db;
-    let queryforfind = "select count(*) from users where role_id=?"; 
+    let queryforfind = "select count(*) as count from users where role_id=?"; 
     let details = db(queryforfind,[user.id]);
     console.log(details);
     console.log("count of the query");

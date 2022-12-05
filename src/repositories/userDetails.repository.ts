@@ -1,9 +1,10 @@
 
 import * as dbcon from '../dbConnection/mysql';
-import * as querys from '../services/querys.service'
+import * as querys from '../services/querys'
 const table = 'users';
 export async function save(userDetails: any) {
     try {
+        console.log("$$$$$$$$$$$$",userDetails)
         console.log("enter");
         const connect = await dbcon.connection();
         let db=connect?.db;
@@ -16,6 +17,7 @@ export async function save(userDetails: any) {
     }
 }
 export async function findOneAndUpdate(updatebasedonId:any, userDetailss:any) {
+    // console.log(">>>>>>>>",updatebasedonId);
     const connect = await dbcon.connection();
     let queryforUpdate = querys.updtaeUserDetailswithProfilePic;
     let db=connect?.db;
@@ -33,6 +35,14 @@ export async function findall(id:any) {
     
     const connect = await dbcon.connection();
     let queryfordetails = querys.getUserDetails;
+    let db=connect?.db;
+    let details=db(queryfordetails,[id.id]);
+    return details;
+}
+export async function count(id:any) {
+    console.log(id);
+    const connect = await dbcon.connection();
+    let queryfordetails = querys.userdrtailsCount;
     let db=connect?.db;
     let details=db(queryfordetails,[id.id]);
     return details;

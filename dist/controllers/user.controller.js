@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUsreDetails = exports.deleteUsreDetails = exports.putUsreDetails = exports.postUsreDetails = exports.getProjects = exports.deleteProject = exports.putProject = exports.postproject = void 0;
-const messages = __importStar(require("../services/messges.services"));
+const messages = __importStar(require("../services/messges"));
 const validation = __importStar(require("../services/validation.services"));
 const projects_model_1 = __importDefault(require("../model/projects.model"));
 const projects_model_2 = __importDefault(require("../model/projects.model"));
@@ -48,6 +48,7 @@ const formidable = __importStar(require("formidable"));
 const projectRepo = __importStar(require("../repositories/project.repository"));
 const UserDetaRepo = __importStar(require("../repositories/userDetails.repository"));
 const apierr_middleware_1 = __importDefault(require("../middleware/apierr.middleware"));
+const constants = __importStar(require("../services/constants"));
 let responseData;
 const dataBase = process.env.DATABASE;
 let jsonContent;
@@ -269,6 +270,9 @@ function postUsreDetails(req, res, next) {
             return __awaiter(this, void 0, void 0, function* () {
                 let firstName = fields.firstName;
                 let lastName = fields.lastName;
+                console.log("*****************");
+                console.log(firstName);
+                console.log(lastName);
                 let checkFname = yield validation.isAlphaorNot(firstName);
                 let checkLname = yield validation.isAlphaorNot(lastName);
                 let fnLength = yield validation.lengthVerification(firstName, 2, 50);
@@ -301,7 +305,8 @@ function postUsreDetails(req, res, next) {
                     }
                     let data = yield (0, promises_1.readFile)(files.filetoupload.filepath);
                     (0, promises_1.writeFile)(dir + "/" + middlewhere.userid + ".png", data);
-                    let profilePic = "/images/" + middlewhere.userid + ".png";
+                    let profilePic = middlewhere.userid + ".png";
+                    console.log(profilePic);
                     let userDetailss = new projects_model_2.default({
                         user_id: middlewhere.userid,
                         first_name: firstName,
@@ -310,6 +315,8 @@ function postUsreDetails(req, res, next) {
                         created_on: currentDateAndTime,
                         updated_on: currentDateAndTime
                     });
+                    console.log(middlewhere.userid);
+                    console.log("the userdetails ===", userDetailss);
                     if (dataBase == "MONGO") {
                         userDetailss.save().then(result => {
                             res.status(200).json({
@@ -321,20 +328,37 @@ function postUsreDetails(req, res, next) {
                             "message": "error while insert the user details"
                         }));
                     }
-                    else { // userDetailss.save().then(result => {
-                        UserDetaRepo.save(userDetailss).then(result => {
-                            res.status(200).json({
-                                "statusCode": 200,
-                                "message": "User details inserted successfully"
-                            });
-                        }).then(err => res.status(500).json({
-                            "statusCode": 500,
-                            "message": "error while insert the user details"
-                        }));
+                    else {
+                        // userDetailss.save().then(result => {
+                        let ud = { "user_id": middlewhere.userid, "first_name": firstName, "last_name": lastName, "profile_pic": profilePic, "created_on": currentDateAndTime, "updated_on": currentDateAndTime };
+                        let userdetailsCount = yield UserDetaRepo.count({ id: middlewhere.userid });
+                        if (userdetailsCount[0].count == 0) {
+                            UserDetaRepo.save(ud).then(result => {
+                                res.status(200).json({
+                                    "statusCode": 200,
+                                    "message": "User details inserted successfully"
+                                });
+                            }).then(err => res.status(500).json({
+                                "statusCode": 500,
+                                "message": "error while insert the user details"
+                            }));
+                        }
+                        else {
+                            let updatebasedonId = { user_id: middlewhere.userid };
+                            UserDetaRepo.findOneAndUpdate(updatebasedonId, ud).then(result => {
+                                // await userDetails.findOneAndUpdate(updatebasedonId, userDetailss).then(result => {
+                                res.status(200).json({
+                                    "statusCode": 200,
+                                    "message": "User details updated successfully"
+                                });
+                            }).then(err => res.status(500).json({
+                                "statusCode": 500,
+                                "message": "error while insert the user details"
+                            }));
+                        }
                     }
                 }
                 else {
-                    console.log("enter123456");
                     let responseData = {
                         "statusCode": 201,
                         "message": "Upload only jpg,jpeg,png format pictures only"
@@ -503,8 +527,11 @@ function getUsreDetails(req, res, next) {
                 });
             });
         }
-        else { // await userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
-            UserDetaRepo.findall({ user_id: middlewhere.userid }).then(userdetails => {
+        else {
+            // await userDetails.find({ user_id: middlewhere.userid }).then(userdetails => {
+            UserDetaRepo.findall({ id: middlewhere.userid }).then(userdetails => {
+                console.log("enter");
+                console.log("user details >>>>", userdetails);
                 if (userdetails.length == 0) {
                     res.status(201).json({
                         "statusCode": 201,
@@ -513,17 +540,27 @@ function getUsreDetails(req, res, next) {
                     return res;
                 }
                 else {
+                    console.log("user details >>>>", userdetails);
+                    let data = userdetails[0];
+                    console.log(userdetails[0]);
+                    let idindb = data.id;
+                    let user_id = data.user_id;
+                    let first_name = data.first_name;
+                    let last_name = data.last_name;
+                    let profile_pic = constants.adminportalURL + "images/" + data.profile_pic;
+                    let dataArray = { "id": idindb, "user_id": user_id, "first_name": first_name, "last_name": last_name, "profile_pic": profile_pic };
                     res.status(200).json({
                         "statusCode": 200,
                         "message": "Listing of user details successfully",
-                        "userdetails": userdetails
+                        "userdetails": dataArray
                     });
                     return res;
                 }
             }).catch(err => {
+                console.log(err);
                 res.status(500).json({
                     "statusCode": 500,
-                    "message": "error while insert the user details"
+                    "message": "error while get the user details"
                 });
             });
         }

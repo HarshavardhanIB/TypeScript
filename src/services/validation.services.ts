@@ -1,5 +1,5 @@
 import validator from 'validator';
-import * as constants from './constants.services';
+import * as constants from './constants';
 export async function emailvalidation(email:string) {
     let emailIdcheckStatus = validator.isEmail(email);
     return emailIdcheckStatus;

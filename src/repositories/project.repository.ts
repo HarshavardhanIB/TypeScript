@@ -2,11 +2,11 @@
 import { nextTick } from 'process';
 import { NextFunction } from 'express';
 import * as dbcon from '../dbConnection/mysql';
-import * as querys from '../services/querys.service'
+import * as querys from '../services/querys'
 import apierr from '../middleware/apierr.middleware';
 import MailMessage from 'nodemailer/lib/mailer/mail-message';
 import mysqljs from 'mysql';
-import * as messages from '../services/messges.services'
+import * as messages from '../services/messges'
 const table = 'users';
 export async function save(project: any) {
     try {
@@ -64,6 +64,17 @@ export async function findall()
         let getProjects=querys.getProjectsForAllDetails;
         let db=connect?.db;
         let details=db(getProjects);
+        return details;
+    } catch (error) {
+        console.log(error);
+    }
+}
+export async function findasllProject(id:any) {
+    try {
+        const connect = await dbcon.connection();
+        let getProjects=querys.getProjectsForAllDetailsforuser;
+        let db=connect?.db;
+        let details=db(getProjects,[id]);
         return details;
     } catch (error) {
         console.log(error);

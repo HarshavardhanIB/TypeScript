@@ -1,0 +1,32 @@
+OpenUrl TC_1 Dataset_1 Steps_1 Request_item_1 Widgetname = OpenUrl Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_2 Widgetname = username Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_3 Widgetname = userpass Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_4 Widgetname = Forgot Password Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_5 Widgetname = submit Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_7 Widgetname = Trial Registrat... Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_8 Widgetname = Phone : Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_10 Widgetname = Email: info@dgs... Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_12 Widgetname = www.ideabytes.c... Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_13 Widgetname = www.dgsms.ca Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_14 Widgetname = | www.dgsmsusa.... failed and the value in web =|  www.dgsmsusa.com   2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_15 Widgetname = www.dgsmsusa.co... Pass 2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_16 Widgetname = | www.dgdox.com failed and the value in web =|  www.dgdox.com   2022-11-25 1669373997
+OpenUrl TC_1 Dataset_1 Steps_1 Response_item_17 Widgetname = www.dgdox.com Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Request_item_1 Widgetname = https://trial.dgsms.ca/ Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_2 Widgetname = username Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_3 Widgetname = userpass Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_4 Widgetname = Forgot Password Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_5 Widgetname = submit Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_7 Widgetname = Trial Registrat... Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_8 Widgetname = Phone : Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_10 Widgetname = Email: info@dgs... Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_12 Widgetname = www.ideabytes.c... Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_13 Widgetname = www.dgsms.ca Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_14 Widgetname = | www.dgsmsusa.... failed and the value in web =|  www.dgsmsusa.com   2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_15 Widgetname = www.dgsmsusa.co... Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_16 Widgetname = | www.dgdox.com failed and the value in web =|  www.dgdox.com   2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_1 Response_item_17 Widgetname = www.dgdox.com Pass 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_2 Request_item_1 Widgetname = username failed 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_2 Request_item_2 Widgetname = userpass failed 2022-11-25 1669373997
+login TC_2 Dataset_1 Steps_2 Request_item_3 Widgetname = submit failed 2022-11-25 1669373997
+

@@ -1,10 +1,10 @@
 import { Response, Request, NextFunction } from "express";
 import { emailvalidation, AlphaNumberorNot, isAlphaorNot, lengthVerification, autogenerateKey } from '../services/validation.services';
 import * as bcrypt from 'bcryptjs';
-import * as constants from '../services/constants.services';
+import * as constants from '../services/constants';
 import dotenv from "dotenv";
 import * as date from 'date-and-time';
-import * as messages from '../services/messges.services';
+import * as messages from '../services/messges';
 import * as jwt from 'jsonwebtoken';
 import User from '../model/user.model';
 import mail from '../services/email.services';

@@ -32,13 +32,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findall = exports.deletee = exports.findOneAndUpdate = exports.save = void 0;
+exports.count = exports.findall = exports.deletee = exports.findOneAndUpdate = exports.save = void 0;
 const dbcon = __importStar(require("../dbConnection/mysql"));
-const querys = __importStar(require("../services/querys.service"));
+const querys = __importStar(require("../services/querys"));
 const table = 'users';
 function save(userDetails) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            console.log("$$$$$$$$$$$$", userDetails);
             console.log("enter");
             const connect = yield dbcon.connection();
             let db = connect === null || connect === void 0 ? void 0 : connect.db;
@@ -54,6 +55,7 @@ function save(userDetails) {
 exports.save = save;
 function findOneAndUpdate(updatebasedonId, userDetailss) {
     return __awaiter(this, void 0, void 0, function* () {
+        // console.log(">>>>>>>>",updatebasedonId);
         const connect = yield dbcon.connection();
         let queryforUpdate = querys.updtaeUserDetailswithProfilePic;
         let db = connect === null || connect === void 0 ? void 0 : connect.db;
@@ -82,3 +84,14 @@ function findall(id) {
     });
 }
 exports.findall = findall;
+function count(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(id);
+        const connect = yield dbcon.connection();
+        let queryfordetails = querys.userdrtailsCount;
+        let db = connect === null || connect === void 0 ? void 0 : connect.db;
+        let details = db(queryfordetails, [id.id]);
+        return details;
+    });
+}
+exports.count = count;

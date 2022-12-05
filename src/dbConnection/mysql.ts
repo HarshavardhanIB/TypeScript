@@ -2,7 +2,7 @@ import mysql from 'mysql';
 import util from 'util';
 import e, { NextFunction } from 'express';
 import dotenv from "dotenv";
-import * as messages from '../services/messges.services';
+import * as messages from '../services/messges';
 import apierr from '../middleware/apierr.middleware';
 dotenv.config();
 export async function connection() {

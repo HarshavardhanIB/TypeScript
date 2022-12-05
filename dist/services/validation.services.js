@@ -37,7 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.autogenerateKey = exports.lengthVerification = exports.isAlphaorNot = exports.AlphaNumberorNot = exports.emailvalidation = void 0;
 const validator_1 = __importDefault(require("validator"));
-const constants = __importStar(require("./constants.services"));
+const constants = __importStar(require("./constants"));
 function emailvalidation(email) {
     return __awaiter(this, void 0, void 0, function* () {
         let emailIdcheckStatus = validator_1.default.isEmail(email);

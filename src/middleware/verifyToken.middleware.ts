@@ -1,9 +1,10 @@
 import { Response, Request, NextFunction } from "express";
 import { type } from "os";
-import * as constants from '../services/constants.services';
-import * as message from '../services/messges.services';
+import * as constants from '../services/constants';
+import * as message from '../services/messges';
 import * as jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
+import { test } from "../services/seleniumTest.service";
 export let userid: number;
 export let roleId: number;
 dotenv.config();
@@ -12,8 +13,9 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
     console.log("enter");
     console.log(req.path);
     let reqPath = req.path;
-    let adminOrUser = reqPath.split("/")[2];
-    if (reqPath.split("/")[3] == "appInfo") {
+    let adminOrUser = reqPath.split("/")[2];    
+    
+    if (reqPath.split("/")[3] == "appInfo"||reqPath.split("/")[3] == "testExcel"||reqPath.split("/")[3] == "testJson" ||reqPath.split("/")[3]=="uploadImg") {
         next();
         return;
     }

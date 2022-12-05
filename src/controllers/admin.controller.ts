@@ -1,4 +1,4 @@
-import * as messages from '../services/messges.services';
+import * as messages from '../services/messges';
 import * as validation from '../services/validation.services';
 import projects from '../model/projects.model';
 import userDetails from '../model/userProfile.model';
@@ -8,7 +8,7 @@ import * as date from 'date-and-time';
 import * as fs from 'fs';
 import * as cron from 'node-cron';
 import { readFile, writeFile } from 'fs/promises';
-import * as constants from '../services/constants.services'
+import * as constants from '../services/constants'
 import express, { Response, Request, NextFunction } from "express";
 import apierr from '../middleware/apierr.middleware';
 import { IncomingMessage } from 'http';
@@ -215,7 +215,7 @@ export async function getProjects(req: Request, res: Response, next: NextFunctio
         })
     }
     { // projects.find({}).then(projects => {
-        projectRepo.findall().then(projects => {
+        projectRepo.findasllProject(middlewhere.userid).then(projects => {
             if (projects.length == 0) {
                 res.status(201).json(
                     {
@@ -279,7 +279,6 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
             res.status(202).end(jsonContent);
             return res;
         }
-
         if (files.filetoupload?.mimetype == 'image/png' || files.filetoupload.mimetype == 'image/jpg' || files.filetoupload.mimetype == 'image/jpeg') {
 
             console.log("enter123");
@@ -289,7 +288,8 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
             }
             let data: any = await readFile(files.filetoupload.filepath);
             writeFile(dir + "/" + middlewhere.userid + ".png", data);
-            let profilePic = "/images/" + middlewhere.userid + ".png";
+            // let profilePic = "/images/" + middlewhere.userid + ".png";
+            let profilePic = middlewhere.userid + ".png";
             let userDetailss = new userDetails({
                 user_id: middlewhere.userid,
                 first_name: firstName,
@@ -313,17 +313,47 @@ export async function postUsreDetails(req: IncomingMessage, res: Response, next:
 
             }
             else { // userDetailss.save().then(result => {
-                UserDetaRepo.save(userDetailss).then(result => {
-                    res.status(200).json({
-                        "statusCode": 200,
-                        "message": "User details inserted successfully"
-                    })
-                }).then(err =>
-                    res.status(500).json({
-                        "statusCode": 500,
-                        "message": "error while insert the user details"
-                    })
-                )
+                // UserDetaRepo.save(userDetailss).then(result => {
+                //     res.status(200).json({
+                //         "statusCode": 200,
+                //         "message": "User details inserted successfully"
+                //     })
+                // }).then(err =>
+                //     res.status(500).json({
+                //         "statusCode": 500,
+                //         "message": "error while insert the user details"
+                //     })
+                // )
+                // userDetailss.save().then(result => {
+                    let userdetailsCount=await UserDetaRepo.count({ id: middlewhere.userid });
+                    if(userdetailsCount[0].count==0)
+                    {UserDetaRepo.save(userDetailss).then(result => {
+                        res.status(200).json({
+                            "statusCode": 200,
+                            "message": "User details inserted successfully"
+                        })
+                    }).then(err =>
+                        res.status(500).json({
+                            "statusCode": 500,
+                            "message": "error while insert the user details"
+                        })
+                    )}
+                    else
+                    {
+                        let updatebasedonId = { user_id: middlewhere.userid };
+                        UserDetaRepo.findOneAndUpdate(updatebasedonId, userDetailss).then(result => {
+                            // await userDetails.findOneAndUpdate(updatebasedonId, userDetailss).then(result => {
+                            res.status(200).json({
+                                "statusCode": 200,
+                                "message": "User details updated successfully"
+                            })
+                        }).then(err =>
+                            res.status(500).json({
+                                "statusCode": 500,
+                                "message": "error while insert the user details"
+                            })
+                        )
+                    }
             }
         }
         else {
@@ -389,7 +419,8 @@ export async function putUsreDetails(req: IncomingMessage, res: Response, next: 
         }
         let data: any = readFile(files.filetoupload.filepath);
         writeFile(dir + "/" + middlewhere.userid + ".png", data);
-        let profilePic = "/images/" + middlewhere.userid + ".png";
+        // let profilePic = "/images/" + middlewhere.userid + ".png";
+        let profilePic =  middlewhere.userid + ".png";
         let userDetailss = {
             first_name: firstName,
             last_name: lastName,
@@ -510,11 +541,25 @@ export async function getUsreDetails(req: Request, res: Response, next: NextFunc
             return res;
         }
         else {
+            console.log(data);
+            let finaldata:any=[];
+            for(let i=0;i<data.length;i++)
+            {
+                let id=data[i].id;
+                let user_id= data[i].user_id;
+                let first_name = data[i].first_name;
+                let last_name=data[i].last_name;
+                let profile_pic=constants.adminportalURL+"images/"+ data[i].profile_pic;
+                let dataArray={"id":id,"user_id":user_id,"first_name":first_name,"last_name":last_name,"profile_pic":profile_pic}
+                finaldata.push(dataArray);
+            }
+            console.log(data[0].id);
+            console.log(data[1].id);
             res.status(200).json(
                 {
                     "statusCode": 200,
                     "message": messages.getUserdetails,
-                    "data": data
+                    "data": finaldata
                 }
             )
             return res;
@@ -608,9 +653,12 @@ export async function usercount(req: Request, res: Response, next: NextFunction)
     else {// let adminCount: number = await user.find({ roleId: 1 }).count();
         // let userCount: number = await user.find({ roleId: 2 }).count();
         let adminCount = await userRepo.findCount({ roleId: 1 });
-        let userCount: number = await userRepo.findCount({ roleId: 2 });
-        let total: number = adminCount + userCount;
-        let data: any = { "users": userCount, "admins": adminCount, "total": total };
+        let userCount:any = await userRepo.findCount({ roleId: 2 });
+        let total: number = adminCount[0].count + userCount[0].count;
+        // console.log("**************************");
+        // console.log(adminCount[0]);
+        // console.log(adminCount[0].count);
+        let data: any = { "users": userCount[0].count, "admins": adminCount[0].count, "total": total };
         let responseData =
         {
             "statusCode": 200,

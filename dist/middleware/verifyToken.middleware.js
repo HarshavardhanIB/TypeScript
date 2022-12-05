@@ -36,8 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.corsFunction = exports.verifyToken = exports.roleId = exports.userid = void 0;
-const constants = __importStar(require("../services/constants.services"));
-const message = __importStar(require("../services/messges.services"));
+const constants = __importStar(require("../services/constants"));
+const message = __importStar(require("../services/messges"));
 const jwt = __importStar(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -47,7 +47,7 @@ function verifyToken(req, res, next) {
         console.log(req.path);
         let reqPath = req.path;
         let adminOrUser = reqPath.split("/")[2];
-        if (reqPath.split("/")[3] == "appInfo") {
+        if (reqPath.split("/")[3] == "appInfo" || reqPath.split("/")[3] == "testExcel" || reqPath.split("/")[3] == "testJson" || reqPath.split("/")[3] == "uploadImg") {
             next();
             return;
         }
